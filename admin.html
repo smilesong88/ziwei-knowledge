@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台 - 紫微斗数知识分享</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="icon">✦</div>
+        <span>紫微斗数知识分享</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">📚 知识库</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">内容管理</div>
+        <ul class="sidebar-nav">
+          <li><a href="#" data-section="overview" class="active">📊 概览</a></li>
+          <li><a href="#" data-section="content">📚 知识文章</a></li>
+          <li><a href="#" data-section="shares">📄 分享文章</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">系统设置</div>
+        <ul class="sidebar-nav">
+          <li><a href="#" data-section="fonts">🔤 字体设置</a></li>
+          <li><a href="#" data-section="contact">📞 联系方式</a></li>
+          <li><a href="#" data-section="ai">🤖 AI 排版</a></li>
+          <li><a href="#" data-section="github">🐙 GitHub</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div id="section-overview" class="admin-section active">
+        <h2 class="admin-section-title">概览</h2>
+        <p class="admin-section-desc">系统运行状态一览</p>
+        <div id="overview-stats"></div>
+        <style>.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;}.stat-number{font-size:32px;font-weight:700;color:var(--primary);margin-bottom:4px;}.stat-label{font-size:13px;color:var(--text-secondary);}</style>
+      </div>
+
+      <div id="section-content" class="admin-section">
+        <h2 class="admin-section-title">知识文章</h2>
+        <p class="admin-section-desc">管理首页九宫格的分类和条目。分类显示在首页，条目显示在分类详情页，条目内容显示在详情页。</p>
+        <div id="content-list"></div>
+      </div>
+
+      <div id="section-fonts" class="admin-section">
+        <h2 class="admin-section-title">字体设置</h2>
+        <p class="admin-section-desc">调整网站各区域的字体大小，修改后实时预览效果</p>
+        <div id="font-controls" class="font-settings-grid"></div>
+        <div style="margin-top:24px;"><button class="btn btn-primary" onclick="Admin.saveFontSettings()">💾 保存字体设置</button></div>
+      </div>
+
+      <div id="section-contact" class="admin-section">
+        <h2 class="admin-section-title">联系方式</h2>
+        <p class="admin-section-desc">设置在页面底部显示的联系方式</p>
+        <div class="ai-config-card">
+          <div class="form-group"><label class="form-label">邮箱</label><input type="email" id="contact-email" class="form-input" placeholder="your@email.com"></div>
+          <div class="form-group"><label class="form-label">微信</label><input type="text" id="contact-wechat" class="form-input" placeholder="微信号或二维码说明"></div>
+          <div class="form-group"><label class="form-label">小红书</label><input type="text" id="contact-xiaohongshu" class="form-input" placeholder="小红书号或链接"></div>
+          <div class="form-group"><label class="form-label">电话</label><input type="text" id="contact-phone" class="form-input" placeholder="手机号"></div>
+        </div>
+        <button class="btn btn-primary" onclick="Admin.saveContactSettings()">💾 保存联系方式</button>
+      </div>
+
+      <div id="section-ai" class="admin-section">
+        <h2 class="admin-section-title">AI 排版设置</h2>
+        <p class="admin-section-desc">配置 AI 接口，用于"我的分享"页面的智能排版功能</p>
+        <div class="ai-config-card">
+          <h3>🔌 接口配置</h3>
+          <div class="form-group"><label class="form-label">API URL</label><input type="url" id="ai-api-url" class="form-input" placeholder="https://api.deepseek.com/chat/completions"><div class="form-hint">OpenAI 兼容接口地址</div></div>
+          <div class="form-group"><label class="form-label">API Key</label><input type="password" id="ai-api-key" class="form-input" placeholder="sk-..."></div>
+          <div class="form-group"><label class="form-label">模型名称</label><input type="text" id="ai-model" class="form-input" placeholder="deepseek-chat"></div>
+        </div>
+        <div class="ai-config-card"><h3>📝 系统提示词</h3><div class="form-group"><textarea id="ai-prompt" class="form-textarea editor-full" rows="10" placeholder="定义 AI 排版的行为和输出格式..."></textarea></div></div>
+        <button class="btn btn-primary" onclick="Admin.saveAISettings()">💾 保存 AI 设置</button>
+      </div>
+
+      <div id="section-github" class="admin-section">
+        <h2 class="admin-section-title">GitHub 设置</h2>
+        <p class="admin-section-desc">配置 GitHub 仓库信息，用于数据存储和 GitHub Pages 部署</p>
+        <div class="ai-config-card">
+          <h3>🐙 仓库信息</h3>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Owner</label><input type="text" id="gh-owner" class="form-input" placeholder="your-username"></div>
+            <div class="form-group"><label class="form-label">Repo</label><input type="text" id="gh-repo" class="form-input" placeholder="ziwei"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Branch</label><input type="text" id="gh-branch" class="form-input" placeholder="main" value="main"></div>
+          <div class="form-group"><label class="form-label">Personal Access Token</label><input type="password" id="gh-token" class="form-input" placeholder="ghp_xxxx..."><div class="form-hint">需要 repo 权限</div></div>
+        </div>
+        <button class="btn btn-primary" onclick="Admin.saveGitHubSettings()">💾 保存 GitHub 设置</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 分类编辑模态框 -->
+  <div id="modal-overlay" class="modal-overlay" onclick="if(event.target===this)Admin.closeModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-title">编辑分类</span>
+        <button class="modal-close" onclick="Admin.closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">分类标题</label><input type="text" id="cat-title" class="form-input" placeholder="如：紫微天府在寅申宫"></div>
+        <div class="form-group"><label class="form-label">分类描述</label><input type="text" id="cat-desc" class="form-input" placeholder="用于首页九宫格展示的简短描述"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="Admin.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="Admin.saveCategory()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 条目编辑模态框 -->
+  <div id="item-modal-overlay" class="modal-overlay" onclick="if(event.target===this)Admin.closeItemModal()">
+    <div class="modal" style="max-width:800px;">
+      <div class="modal-header">
+        <span class="modal-title" id="item-modal-title">编辑条目</span>
+        <button class="modal-close" onclick="Admin.closeItemModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">条目标题</label><input type="text" id="item-title" class="form-input" placeholder="如：紫微天府在寅申坐命宫"></div>
+        <div class="form-group"><label class="form-label">简短描述</label><input type="text" id="item-desc" class="form-input" placeholder="用于分类详情页卡片展示"></div>
+        <div class="form-group">
+          <label class="form-label">天干命盘解读（点击切换编辑不同天干的内容）</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="stem-tabs-edit"></div>
+          <textarea id="item-content" class="form-textarea editor-full" rows="15" placeholder="当前天干的命盘解读内容，支持 Markdown 语法..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="Admin.closeItemModal()">取消</button>
+        <button class="btn btn-primary" onclick="Admin.saveItem()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/github-api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

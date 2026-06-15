@@ -1,0 +1,60 @@
+{
+  "siteTitle": "紫微斗数知识分享",
+  "siteSubtitle": "传统命理 · 现代解读",
+  "siteDescription": "分享紫微斗数学习心得与命盘解读",
+  "contact": {
+    "email": "smilesong@gmail.com",
+    "wechat": "smilesong",
+    "xiaohongshu": "",
+    "phone": ""
+  },
+  "github": {
+    "owner": "",
+    "repo": "",
+    "branch": "main",
+    "token": ""
+  },
+  "fonts": {
+    "heading": {
+      "size": 36,
+      "family": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "weight": "700"
+    },
+    "subheading": {
+      "size": 35,
+      "family": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "weight": "600"
+    },
+    "body": {
+      "size": 27,
+      "family": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "weight": "400"
+    },
+    "caption": {
+      "size": 14,
+      "family": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "weight": "400"
+    },
+    "cardTitle": {
+      "size": 28,
+      "family": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "weight": "600"
+    }
+  },
+  "theme": {
+    "primary": "#4F46E5",
+    "primaryLight": "#EEF2FF",
+    "bg": "#F9FAFB",
+    "cardBg": "#FFFFFF",
+    "text": "#111827",
+    "textSecondary": "#6B7280",
+    "border": "#E5E7EB",
+    "radius": "12px"
+  },
+  "ai": {
+    "apiUrl": "",
+    "apiKey": "",
+    "model": "deepseek-chat",
+    "systemPrompt": "你是一个专业的紫微斗数命理师和内容编辑。请根据用户提供的内容，进行排版优化。\n\n要求：\n1. 保持内容的专业性和准确性\n2. 使用清晰的 Markdown 格式\n3. 合理使用标题层级（##、###）\n4. 重要概念用 **加粗** 标注\n5. 适当使用引用（>）和列表（-）\n6. 段落之间保持适当间距\n7. 如果是命盘解读，按照「宫位→主星→四化→解读」的逻辑组织\n\n请直接输出优化后的 Markdown 内容，不要加额外说明。"
+  }
+}
