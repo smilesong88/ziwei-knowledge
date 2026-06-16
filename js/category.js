@@ -18,13 +18,8 @@ const Category = {
 
   async loadSettings() {
     try {
-      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-      if (isLocal) {
-        const resp = await fetch('data/settings.json');
-        this.settings = await resp.json();
-      } else {
-        this.settings = await this.loadFromGitHub('data/settings.json');
-      }
+      const resp = await fetch('data/settings.json');
+      this.settings = await resp.json();
       this.applyFontSettings();
     } catch (e) {
       this.settings = { fonts: {} };
@@ -33,28 +28,12 @@ const Category = {
 
   async loadContent(id) {
     try {
-      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-      if (isLocal) {
-        const resp = await fetch('data/content.json');
-        this.data = await resp.json();
-      } else {
-        this.data = await this.loadFromGitHub('data/content.json');
-      }
+      const resp = await fetch('data/content.json');
+      this.data = await resp.json();
       this.category = (this.data.categories || []).find(c => c.id === id);
     } catch (e) {
       console.error('加载内容失败:', e);
     }
-  },
-
-  async loadFromGitHub(filePath) {
-    GitHubAPI.init(this.settings);
-    if (GitHubAPI.isConfigured()) {
-      const file = await GitHubAPI.getFile(filePath);
-      return file ? file.content : null;
-    }
-    const url = `https://raw.githubusercontent.com/${this.settings.github.owner}/${this.settings.github.repo}/${this.settings.github.branch}/${filePath}`;
-    const resp = await fetch(url);
-    return resp.json();
   },
 
   applyFontSettings() {
