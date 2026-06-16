@@ -13,14 +13,12 @@ async function load() {
   if (!catId || !itemId) { showError('参数不完整'); return; }
 
   try {
-    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    const settingsResp = await fetch(isLocal ? 'data/settings.json' : 'data/settings.json');
+    const settingsResp = await fetch('data/settings.json');
     settings = await settingsResp.json();
   } catch (e) { settings = {}; }
 
   try {
-    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    const resp = await fetch(isLocal ? 'data/content.json' : 'data/content.json');
+    const resp = await fetch('data/content.json');
     data = await resp.json();
   } catch (e) {
     showError('加载数据失败');
