@@ -13,6 +13,7 @@ const Admin = {
   async init() {
     await this.loadSettings();
     await this.loadContent();
+    GitHubAPI.init(this.settings);  // 初始化 GitHub API 配置
     this.renderOverview();
     this.setupNav();
     this.setupFontControls();
@@ -478,13 +479,27 @@ const Admin = {
   // ========== 通用 ==========
   async saveContent() {
     try {
-      await fetch('data/content.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.content, null, 2) });
+      if (GitHubAPI.isConfigured()) {
+        // 通过 GitHub API 保存到仓库
+        const existing = await GitHubAPI.getFile('data/content.json');
+        await GitHubAPI.saveFile('data/content.json', this.content, existing?.sha, 'Update content.json via admin');
+      } else {
+        // 本地开发时 fallback 到 PUT
+        await fetch('data/content.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.content, null, 2) });
+      }
     } catch (e) { showToast('保存失败: ' + e.message, 'error'); }
   },
 
   async saveSettings() {
     try {
-      await fetch('data/settings.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.settings, null, 2) });
+      if (GitHubAPI.isConfigured()) {
+        // 通过 GitHub API 保存到仓库
+        const existing = await GitHubAPI.getFile('data/settings.json');
+        await GitHubAPI.saveFile('data/settings.json', this.settings, existing?.sha, 'Update settings.json via admin');
+      } else {
+        // 本地开发时 fallback 到 PUT
+        await fetch('data/settings.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.settings, null, 2) });
+      }
     } catch (e) { showToast('保存失败: ' + e.message, 'error'); }
   },
 
