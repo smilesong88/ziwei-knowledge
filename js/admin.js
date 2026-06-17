@@ -13,7 +13,11 @@ const Admin = {
   async init() {
     await this.loadSettings();
     await this.loadContent();
-    GitHubAPI.init(this.settings);  // 初始化 GitHub API 配置
+    // 从 localStorage 恢复 token（不存储在仓库中）
+    if (this.settings.github) {
+      this.settings.github.token = localStorage.getItem('ziwei_gh_token') || '';
+    }
+    GitHubAPI.init(this.settings);
     this.renderOverview();
     this.setupNav();
     this.setupFontControls();
@@ -462,7 +466,7 @@ const Admin = {
     document.getElementById('gh-owner').value = gh.owner || '';
     document.getElementById('gh-repo').value = gh.repo || '';
     document.getElementById('gh-branch').value = gh.branch || 'main';
-    document.getElementById('gh-token').value = gh.token || '';
+    document.getElementById('gh-token').value = localStorage.getItem('ziwei_gh_token') || '';
   },
 
   async saveGitHubSettings() {
@@ -470,9 +474,20 @@ const Admin = {
     this.settings.github.owner = document.getElementById('gh-owner').value.trim();
     this.settings.github.repo = document.getElementById('gh-repo').value.trim();
     this.settings.github.branch = document.getElementById('gh-branch').value.trim() || 'main';
-    this.settings.github.token = document.getElementById('gh-token').value.trim();
+    // token 存 localStorage，不提交到仓库（安全考虑）
+    const token = document.getElementById('gh-token').value.trim();
+    if (token) {
+      localStorage.setItem('ziwei_gh_token', token);
+    } else {
+      localStorage.removeItem('ziwei_gh_token');
+    }
+    this.settings.github.token = token;
     GitHubAPI.init(this.settings);
+    // 保存 settings 时不包含 token
+    const ghBackup = { ...this.settings.github };
+    delete this.settings.github.token;
     await this.saveSettings();
+    this.settings.github.token = ghBackup.token;
     showToast('GitHub 设置已保存', 'success');
   },
 
